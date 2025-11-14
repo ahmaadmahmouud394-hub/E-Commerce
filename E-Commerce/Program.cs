@@ -2,7 +2,8 @@ using E_Commerce.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connString = "Data Source = (localdb)\\MSSQLLocalDB";
+var connString = builder.Configuration.GetConnectionString("localdb)\\MSSQLLocalDB");
+
 
 
 // Add services to the container.
