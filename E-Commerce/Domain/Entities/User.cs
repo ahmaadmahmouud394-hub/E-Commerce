@@ -19,7 +19,6 @@ namespace E_Commerce.Domain.Entities
         [ForeignKey("RoleId")]
         public virtual Role? Role { get; set; }
 
-        //public virtual ICollection<UserPermission> UserPermissions { get; set; }
-        //public virtual ICollection<Invoice> Invoices { get; set; }
+        public virtual ICollection<Invoice> Invoices { get; set; }
     }
 }

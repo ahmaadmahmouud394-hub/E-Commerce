@@ -23,7 +23,7 @@ namespace E_Commerce.Domain.Entities
         [ForeignKey("BrandId")]
         public virtual Brand? Brand { get; set; }
 
-        //public virtual ICollection<Facility> Facilities { get; set; }
-        //public virtual ICollection<Invoice> Invoices { get; set; }
+        public virtual ICollection<Facility> Facilities { get; set; }
+        public virtual ICollection<Invoice> Invoices { get; set; }
     }
 }

@@ -12,6 +12,6 @@ namespace E_Commerce.Domain.Entities
         [Required]
         public string PhotoUrl { get; set; }
         public string? Slogan {  get; set; }
-        //public virtual Product Product { get; set; }
+        public virtual ICollection<Product> Products { get; set; }
     }
 }

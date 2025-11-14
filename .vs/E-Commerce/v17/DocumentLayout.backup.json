@@ -1,10 +1,14 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\Ahmed\\windows app\\E-Commerce\\",
+  "WorkspaceRootPath": "C:\\Users\\aabdelkar\\source\\repos\\E-Commerce\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{FF0D9108-AAFB-43F9-A3A1-FD7A478A194B}|E-Commerce\\E-Commerce.csproj|d:\\ahmed\\windows app\\e-commerce\\e-commerce\\e-commerce.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
-      "RelativeMoniker": "D:0:0:{FF0D9108-AAFB-43F9-A3A1-FD7A478A194B}|E-Commerce\\E-Commerce.csproj|solutionrelative:e-commerce\\e-commerce.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+      "AbsoluteMoniker": "D:0:0:{FF0D9108-AAFB-43F9-A3A1-FD7A478A194B}|E-Commerce\\E-Commerce.csproj|c:\\users\\aabdelkar\\source\\repos\\e-commerce\\e-commerce\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FF0D9108-AAFB-43F9-A3A1-FD7A478A194B}|E-Commerce\\E-Commerce.csproj|solutionrelative:e-commerce\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FF0D9108-AAFB-43F9-A3A1-FD7A478A194B}|E-Commerce\\E-Commerce.csproj|c:\\users\\aabdelkar\\source\\repos\\e-commerce\\e-commerce\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FF0D9108-AAFB-43F9-A3A1-FD7A478A194B}|E-Commerce\\E-Commerce.csproj|solutionrelative:e-commerce\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -39,13 +43,27 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "E-Commerce",
-              "DocumentMoniker": "D:\\Ahmed\\windows app\\E-Commerce\\E-Commerce\\E-Commerce.csproj",
-              "RelativeDocumentMoniker": "E-Commerce\\E-Commerce.csproj",
-              "ToolTip": "D:\\Ahmed\\windows app\\E-Commerce\\E-Commerce\\E-Commerce.csproj",
-              "RelativeToolTip": "E-Commerce\\E-Commerce.csproj",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-11-14T08:50:01.271Z",
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\aabdelkar\\source\\repos\\E-Commerce\\E-Commerce\\Program.cs",
+              "RelativeDocumentMoniker": "E-Commerce\\Program.cs",
+              "ToolTip": "C:\\Users\\aabdelkar\\source\\repos\\E-Commerce\\E-Commerce\\Program.cs",
+              "RelativeToolTip": "E-Commerce\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-14T14:00:45.443Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "AppDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\aabdelkar\\source\\repos\\E-Commerce\\E-Commerce\\Data\\AppDbContext.cs",
+              "RelativeDocumentMoniker": "E-Commerce\\Data\\AppDbContext.cs",
+              "ToolTip": "C:\\Users\\aabdelkar\\source\\repos\\E-Commerce\\E-Commerce\\Data\\AppDbContext.cs",
+              "RelativeToolTip": "E-Commerce\\Data\\AppDbContext.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAxwA8AAAA3AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-14T14:00:39.998Z",
               "EditorCaption": ""
             }
           ]
