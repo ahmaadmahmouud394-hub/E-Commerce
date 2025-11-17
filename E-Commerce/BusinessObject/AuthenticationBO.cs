@@ -1,5 +1,7 @@
 ﻿using E_Commerce.Data;
 using E_Commerce.Domain.Entities;
+using System.Data.Entity;
+using System.Data.SqlClient;
 
 namespace E_Commerce.BusinessObject
 {
@@ -11,16 +13,10 @@ namespace E_Commerce.BusinessObject
         {
             _context = context;
         }
-
-        public bool Authenticate(User user)
+        public User GetAuthenticated(User user)
         {
-
-            var IsAuthenticated = _context.Users.Where(e => e.UserName == user.UserName && e.Password == user.Password).Any();
+            var IsAuthenticated = _context.Users.Where(e => e.UserName == user.UserName && e.Password == user.Password).FirstOrDefault();
             return IsAuthenticated;
-        }
-        public string GetAuthenticated(User user) 
-        {
-            return "";
         }
     }
 }
