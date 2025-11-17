@@ -6,12 +6,17 @@ namespace E_Commerce.Domain.Entities
     public class User
     {
         [Key]
-        public int Id { get; set; } 
-        public required string Name { get; set; }
-        public required string Email { get; set; }
-        public required string Password { get; set; }
-        public required string Address { get; set; }
-        public required string UserName { get; set; }
+        public int Id { get; set; }
+        [Required]
+        public  string Name { get; set; } = string.Empty;
+        [Required]
+        public string Email { get; set; } = string.Empty;
+        [Required]
+        public string Password { get; set; } = string.Empty;
+        [Required]
+        public string Address { get; set; } = string.Empty;
+        [Required]
+        public string UserName { get; set; } = string.Empty;
         public DateOnly BirthDate {  get; set; }
         public string? AvatarUrl { get; set; }
 

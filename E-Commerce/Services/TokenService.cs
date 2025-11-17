@@ -48,10 +48,10 @@ namespace E_Commerce.Services
                     IssuerSigningKey = new SymmetricSecurityKey(key),
 
                     ValidateIssuer = true,
-                    ValidIssuer = "VeniceCom.com",
+                    ValidIssuer = "ECommerce.com",
 
                     ValidateAudience = true,
-                    ValidAudience = "VeniceCom.com",
+                    ValidAudience = "ECommerce.com",
 
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.Zero
