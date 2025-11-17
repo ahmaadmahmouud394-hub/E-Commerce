@@ -1,6 +1,6 @@
 .vs/
 .idea/
-obj/
-bin/
+E-commerce/obj/
+E-commerce/bin/
 appsettings.Development.json
 appsettings.json
