@@ -1,5 +1,7 @@
 ﻿using E_Commerce.BusinessObject;
+using E_Commerce.Data;
 using E_Commerce.Domain.Entities;
+using System.Data;
 
 namespace E_Commerce.Middleware
 {
@@ -7,10 +9,11 @@ namespace E_Commerce.Middleware
     {
         private readonly RequestDelegate _next;
         private readonly AuthenticationBO _authentication;
-        
-        public Middleware(RequestDelegate next)
+        private readonly AppDbContext _appDbContext;
+        public Middleware(RequestDelegate next,AppDbContext appDbContext)
         {
             _next = next;
+            _appDbContext = appDbContext;
         }
         public async Task InvokeAsync(HttpContext context, AuthenticationBO authBO)
         {
@@ -34,64 +37,317 @@ namespace E_Commerce.Middleware
             {
                 path = referer.ToLower();
             }
-
-            if (path.StartsWith("/user"))
-            {
-                await _next(context);
-                return;
-            }
             var userIdString = context.Session.GetString("UserId");
-            var role = context.Session.GetString("Role");
+            var roleName = context.Session.GetString("Role");
+            var Role = _appDbContext.Roles.Where(a => a.Name == roleName).FirstOrDefault();
             var token = context.Session.GetString("token");
-            switch (role)
+            //------------------------------------checking permessions----------------------------------
+
+            if (path.ToLower().Contains("/delete") || path.ToLower().Contains("/update") || path.ToLower().Contains("/Create") || path.ToLower().Contains("/"))
             {
-                case "Admin":
-                    if (path.StartsWith("/admin"))
+                //------------------Users
+                //------Delete ------ Users
+                if (path.ToLower().Contains("/delete") && path.ToLower().Contains("/users"))
+                {
+                    var hasPermission = (from rp in _appDbContext.RolePermissions
+                                         join p in _appDbContext.Permissions
+                                         on rp.PermissionId equals p.Id
+                                         where rp.RoleId == Role.Id && p.Name == "Delete-Users"
+                                         select rp).Any();
+                    if (hasPermission) 
                     {
                         await _next(context);
                         return;
                     }
-                    if (path.StartsWith("/client"))
+                    else
                     {
-                        role = "Client";
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        return;
+                    }
+                }
+                //------Write ------ Users
+                if ((path.ToLower().Contains("/update")|| path.ToLower().Contains("/create")) && path.ToLower().Contains("/users"))
+                {
+                    var hasPermission = (from rp in _appDbContext.RolePermissions
+                                         join p in _appDbContext.Permissions
+                                         on rp.PermissionId equals p.Id
+                                         where rp.RoleId == Role.Id && p.Name == "Write-Users"
+                                         select rp).Any();
+                    if (hasPermission)
+                    {
                         await _next(context);
                         return;
                     }
-                    break;
-                case "Employee":
-                    if (path.StartsWith("/employee"))
+                    else
+                    {
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        return;
+                    }
+                }
+                //------Read ------ Users
+                if (path.ToLower().Contains("/read") && path.ToLower().Contains("/users"))
+                {
+                    var hasPermission = (from rp in _appDbContext.RolePermissions
+                                         join p in _appDbContext.Permissions
+                                         on rp.PermissionId equals p.Id
+                                         where rp.RoleId == Role.Id && p.Name == "Read-Users"
+                                         select rp).Any();
+                    if (hasPermission)
                     {
                         await _next(context);
                         return;
                     }
-                    break;
-                case "Client":
-                    if (path.StartsWith("/client"))
+                    else
+                    {
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        return;
+                    }
+                }
+                //------------------------------------products
+                //------Delete ------ Products
+                if (path.ToLower().Contains("/delete") && path.ToLower().Contains("/products"))
+                {
+                    var hasPermission = (from rp in _appDbContext.RolePermissions
+                                         join p in _appDbContext.Permissions
+                                         on rp.PermissionId equals p.Id
+                                         where rp.RoleId == Role.Id && p.Name == "Delete-Products"
+                                         select rp).Any();
+                    if (hasPermission)
                     {
                         await _next(context);
                         return;
                     }
-                    break;
-
-                default:
-                    context.Response.Redirect("/User/AccessDenied");
-                    break;
+                    else
+                    {
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        return;
+                    }
+                }
+                //------Write ------ Products
+                if ((path.ToLower().Contains("/update") || path.ToLower().Contains("/create")) && path.ToLower().Contains("/products"))
+                {
+                    var hasPermission = (from rp in _appDbContext.RolePermissions
+                                         join p in _appDbContext.Permissions
+                                         on rp.PermissionId equals p.Id
+                                         where rp.RoleId == Role.Id && p.Name == "Write-Products"
+                                         select rp).Any();
+                    if (hasPermission)
+                    {
+                        await _next(context);
+                        return;
+                    }
+                    else
+                    {
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        return;
+                    }
+                }
+                //------Read ------ Products
+                if (path.ToLower().Contains("/read") && path.ToLower().Contains("/products"))
+                {
+                    var hasPermission = (from rp in _appDbContext.RolePermissions
+                                         join p in _appDbContext.Permissions
+                                         on rp.PermissionId equals p.Id
+                                         where rp.RoleId == Role.Id && p.Name == "Read-Products"
+                                         select rp).Any();
+                    if (hasPermission)
+                    {
+                        await _next(context);
+                        return;
+                    }
+                    else
+                    {
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        return;
+                    }
+                }
+                //--------------------------------------Brands
+                //------Delete ------ Brands
+                if (path.ToLower().Contains("/delete") && path.ToLower().Contains("/brands"))
+                {
+                    var hasPermission = (from rp in _appDbContext.RolePermissions
+                                         join p in _appDbContext.Permissions
+                                         on rp.PermissionId equals p.Id
+                                         where rp.RoleId == Role.Id && p.Name == "Delete-Brands"
+                                         select rp).Any();
+                    if (hasPermission)
+                    {
+                        await _next(context);
+                        return;
+                    }
+                    else
+                    {
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        return;
+                    }
+                }
+                //------Write ------ Brands
+                if ((path.ToLower().Contains("/update") || path.ToLower().Contains("/create")) && path.ToLower().Contains("/brands"))
+                {
+                    var hasPermission = (from rp in _appDbContext.RolePermissions
+                                         join p in _appDbContext.Permissions
+                                         on rp.PermissionId equals p.Id
+                                         where rp.RoleId == Role.Id && p.Name == "Write-Brands"
+                                         select rp).Any();
+                    if (hasPermission)
+                    {
+                        await _next(context);
+                        return;
+                    }
+                    else
+                    {
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        return;
+                    }
+                }
+                //----- Read ------ Brands
+                if (path.ToLower().Contains("/read") && path.ToLower().Contains("/brands"))
+                {
+                    var hasPermission = (from rp in _appDbContext.RolePermissions
+                                         join p in _appDbContext.Permissions
+                                         on rp.PermissionId equals p.Id
+                                         where rp.RoleId == Role.Id && p.Name == "Read-Brands"
+                                         select rp).Any();
+                    if (hasPermission)
+                    {
+                        await _next(context);
+                        return;
+                    }
+                    else
+                    {
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        return;
+                    }
+                }
+                //--------------------------------------Categories
+                //-----Delete-----Categories
+                if (path.ToLower().Contains("/delete") && path.ToLower().Contains("/categories"))
+                {
+                    var hasPermission = (from rp in _appDbContext.RolePermissions
+                                         join p in _appDbContext.Permissions
+                                         on rp.PermissionId equals p.Id
+                                         where rp.RoleId == Role.Id && p.Name == "Delete-Categories"
+                                         select rp).Any();
+                    if (hasPermission)
+                    {
+                        await _next(context);
+                        return;
+                    }
+                    else
+                    {
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        return;
+                    }
+                }
+                //------Write ------ Categories
+                if ((path.ToLower().Contains("/update") || path.ToLower().Contains("/create")) && path.ToLower().Contains("/categories"))
+                {
+                    var hasPermission = (from rp in _appDbContext.RolePermissions
+                                         join p in _appDbContext.Permissions
+                                         on rp.PermissionId equals p.Id
+                                         where rp.RoleId == Role.Id && p.Name == "Write-Categories"
+                                         select rp).Any();
+                    if (hasPermission)
+                    {
+                        await _next(context);
+                        return;
+                    }
+                    else
+                    {
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        return;
+                    }
+                }
+                //----- Read ------ Categories
+                if (path.ToLower().Contains("/read") && path.ToLower().Contains("/categories"))
+                {
+                    var hasPermission = (from rp in _appDbContext.RolePermissions
+                                         join p in _appDbContext.Permissions
+                                         on rp.PermissionId equals p.Id
+                                         where rp.RoleId == Role.Id && p.Name == "Read-Categories"
+                                         select rp).Any();
+                    if (hasPermission)
+                    {
+                        await _next(context);
+                        return;
+                    }
+                    else
+                    {
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        return;
+                    }
+                }
+                //--------------------------------------Roles
+                //-----Delete-----Roles
+                if (path.ToLower().Contains("/delete") && path.ToLower().Contains("/roles"))
+                {
+                    var hasPermission = (from rp in _appDbContext.RolePermissions
+                                         join p in _appDbContext.Permissions
+                                         on rp.PermissionId equals p.Id
+                                         where rp.RoleId == Role.Id && p.Name == "Delete-Roles"
+                                         select rp).Any();
+                    if (hasPermission)
+                    {
+                        await _next(context);
+                        return;
+                    }
+                    else
+                    {
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        return;
+                    }
+                }
+                //------Write ------ Roles
+                if ((path.ToLower().Contains("/update") || path.ToLower().Contains("/create")) && path.ToLower().Contains("/roles"))
+                {
+                    var hasPermission = (from rp in _appDbContext.RolePermissions
+                                         join p in _appDbContext.Permissions
+                                         on rp.PermissionId equals p.Id
+                                         where rp.RoleId == Role.Id && p.Name == "Write-Roles"
+                                         select rp).Any();
+                    if (hasPermission)
+                    {
+                        await _next(context);
+                        return;
+                    }
+                    else
+                    {
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        return;
+                    }
+                }
+                //----- Read ------ Roles
+                if (path.ToLower().Contains("/read") && path.ToLower().Contains("/roles"))
+                {
+                    var hasPermission = (from rp in _appDbContext.RolePermissions
+                                         join p in _appDbContext.Permissions
+                                         on rp.PermissionId equals p.Id
+                                         where rp.RoleId == Role.Id && p.Name == "Read-Roles"
+                                         select rp).Any();
+                    if (hasPermission)
+                    {
+                        await _next(context);
+                        return;
+                    }
+                    else
+                    {
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        return;
+                    }
+                }
+                else
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    return;
+                }
             }
-
-            // Paths like /User/SomeOtherAction should be allowed *only* if authenticated.
-            // The previous logic allowed all /User paths, which is typically not correct 
-            // for authenticated areas like /User/Profile unless intended as public access.
-            // I've removed the redundant /User check here to rely on the authentication check below.
-
-
 
 
             // --- 2. Authentication Check ---
 
             if (string.IsNullOrEmpty(userIdString))
             {
-                // Not logged in → redirect to SignIn
-                context.Response.Redirect("/User/Index");
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                 return;
             }
 
@@ -111,24 +367,10 @@ namespace E_Commerce.Middleware
                 else
                 {
                     // If UserId is present but invalid/unparseable, redirect to sign in
-                    context.Response.Redirect("/User/Index");
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                     return;
                 }
             }
-
-            // --- 3. Authorization Check (Role-Based) ---
-
-            // Ensure path is not null before checking for roles
-            if (path != null)
-            {
-                // If attempting to access an /admin path without the 'Admin' role
-                if (path.StartsWith("/admin") && role != "Admin")
-                {
-                    context.Response.Redirect("/User/AccessDenied");
-                    return;
-                }
-            }
-
             // The rest of the requests (authenticated and authorized) proceed
             await _next(context);
         }

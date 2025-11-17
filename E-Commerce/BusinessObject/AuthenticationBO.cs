@@ -1,6 +1,5 @@
 ﻿using E_Commerce.Data;
 using E_Commerce.Domain.Entities;
-using System.Data.Entity;
 using System.Data.SqlClient;
 
 namespace E_Commerce.BusinessObject

@@ -53,48 +53,48 @@ public class AuthController : ControllerBase
         var customerRole = await _context.Roles.FindAsync(1);
         if (customerRole != null)
         {
-            _context.UserRoles.Add(new UserRole { UserId = user.Id, RoleId = customerRole.Id });
-            await _context.SaveChangesAsync();
+            //_context.UserRoles.Add(new UserRole { UserId = user.Id, RoleId = customerRole.Id });
+            //await _context.SaveChangesAsync();
         }
 
         return Ok(new { message = "User registered successfully as a Customer." });
     }
 
-    [HttpPost]
-    public async Task<ActionResult<object>> Login([FromBody] LoginRequestDto login)
-    {
-        var user = await _context.Users
-            .FirstOrDefaultAsync(u => u.UserName == login.UserName);
+    //[HttpPost]
+    //public async Task<ActionResult<object>> Login([FromBody] LoginRequestDto login)
+    //{
+    //    var user = await _context.Users
+    //        .FirstOrDefaultAsync(u => u.UserName == login.UserName);
 
-        if (user == null)
-        {
-            return Unauthorized("Invalid username or password");
-        }
+    //    if (user == null)
+    //    {
+    //        return Unauthorized("Invalid username or password");
+    //    }
 
-        var passwordVerificationResult = _passwordHasher.VerifyHashedPassword(user, user.Password, login.Password);
-        if (passwordVerificationResult == PasswordVerificationResult.Failed)
-        {
-            return Unauthorized("Invalid username or password");
-        }
+    //    var passwordVerificationResult = _passwordHasher.VerifyHashedPassword(user, user.Password, login.Password);
+    //    if (passwordVerificationResult == PasswordVerificationResult.Failed)
+    //    {
+    //        return Unauthorized("Invalid username or password");
+    //    }
 
-        // Get ALL of the user's roles
-        var roleIds = await _context.UserRoles
-            .Where(ur => ur.UserId == user.Id)
-            .Select(ur => ur.RoleId)
-            .ToListAsync();
+    //    // Get ALL of the user's roles
+    //    //var roleIds = await _context.UserRoles
+    //    //    .Where(ur => ur.UserId == user.Id)
+    //    //    .Select(ur => ur.RoleId)
+    //    //    .ToListAsync();
 
-        var roles = await _context.Roles
-            .Where(r => roleIds.Contains(r.Id))
-            .ToListAsync();
+    //    //var roles = await _context.Roles
+    //    //    .Where(r => roleIds.Contains(r.Id))
+    //    //    .ToListAsync();
 
-        // Get ALL permissions from ALL those roles (and make sure they are unique)
-        var permissions = await _context.RolePermissions
-            .Where(rp => roleIds.Contains(rp.RoleId))
-            .Select(rp => rp.Permission)
-            .Distinct()
-            .ToListAsync();
+    //    //// Get ALL permissions from ALL those roles (and make sure they are unique)
+    //    //var permissions = await _context.RolePermissions
+    //    //    .Where(rp => roleIds.Contains(rp.RoleId))
+    //    //    .Select(rp => rp.Permission)
+    //    //    .Distinct()
+    //    //    .ToListAsync();
 
-        var token = _tokenService.GenerateJwtToken(user, roles, permissions);
-        return Ok(new { token = token });
-    }
+    //    //var token = _tokenService.GenerateJwtToken(user, roles, permissions);
+    //    //return Ok(new { token = token });
+//}
 }

@@ -24,7 +24,7 @@ public class AdminController : ControllerBase
     }
 
     [HttpPost("users")]
-    [HasPermission(PermissionsEnum.UserCreate)]
+    //[HasPermission(PermissionsEnum.UserCreate)]
     public async Task<IActionResult> CreateUser([FromBody] CreateUserRequestDto request)
     {
         var user = new User
@@ -52,7 +52,7 @@ public class AdminController : ControllerBase
         {
             if (await _context.Roles.AnyAsync(r => r.Id == roleId))
             {
-                _context.UserRoles.Add(new UserRole { UserId = user.Id, RoleId = roleId });
+                //_context.UserRoles.Add(new UserRole { UserId = user.Id, RoleId = roleId });
             }
         }
         await _context.SaveChangesAsync();
