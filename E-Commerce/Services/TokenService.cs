@@ -1,71 +1,60 @@
 ﻿using E_Commerce.Domain.Entities;
-using Microsoft.Extensions.Configuration; 
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims; 
+using System.Security.Claims;
 using System.Text;
 
 namespace E_Commerce.Services
 {
     public class TokenService
     {
-        public string GenerateJwtToken(string UserName)
-        {
-            var Header = UserName;
-            var claims = new[]
-            {
-            new Claim(JwtRegisteredClaimNames.Sub, Header),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-        };
+        private readonly SymmetricSecurityKey _key;
+        private readonly string _issuer;
+        private readonly string _audience;
+        private readonly double _minutes;
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("AhmedMahmoudAbdelkarimAhmedEbrahimKhaleefa123456789"));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        public TokenService(IConfiguration config)
+        {
+            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]!));
+            _issuer = config["Jwt:Issuer"]!;
+            _audience = config["Jwt:Audience"]!;
+            _minutes = double.Parse(config["Jwt:AccessTokenMinutes"]!);
+        }
+
+        // This method is now updated
+        public string GenerateJwtToken(User user, List<Role> roles, IEnumerable<Permission> permissions)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Name, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+            };
+
+            // Add all roles as "role" claims
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role.Name));
+            }
+
+            // Add all unique permissions as "permission" claims
+            foreach (var perm in permissions)
+            {
+                claims.Add(new Claim("permission", perm.Name));
+            }
+
+            var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                issuer: "ECommerce.com",
-                audience: "ECommerce.com",
+                issuer: _issuer,
+                audience: _audience,
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(90),
+                expires: DateTime.Now.AddMinutes(_minutes),
                 signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
-        }
-        public string? ValidateAndGetUsername(string token)
-        {
-            if (string.IsNullOrEmpty(token))
-                return null;
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.UTF8.GetBytes("AhmedMahmoudAbdelkarimAhmedEbrahimKhaleefa123456789");
-
-            try
-            {
-                var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-
-                    ValidateIssuer = true,
-                    ValidIssuer = "ECommerce.com",
-
-                    ValidateAudience = true,
-                    ValidAudience = "ECommerce.com",
-
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.Zero
-                }, out SecurityToken validatedToken);
-
-                var username = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                //string Role = username.Split("|").Last() ?? "";
-
-                return username;
-            }
-            catch
-            {
-                return null;
-            }
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿
-using E_Commerce.Domain.Entities;
+﻿using E_Commerce.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime;
 using System.Security.Policy;
@@ -10,6 +9,7 @@ namespace E_Commerce.Data
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<RolePermission> RolePermissions { get; set; }
         public DbSet<Product> Products { get; set; }
@@ -20,11 +20,21 @@ namespace E_Commerce.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>()
+            //modelBuilder.Entity<User>()
+            //    //.HasOne(b => b.Role)
+            //    //.WithMany(t => t.Users)
+            //    .HasForeignKey(b => b.RoleId)
+            //     ;
+            modelBuilder.Entity<UserRole>()
+                .HasOne(b => b.User)
+                .WithMany(t => t.UserRoles)
+                .HasForeignKey(e => e.UserId);
+
+
+            modelBuilder.Entity<UserRole>()
                 .HasOne(b => b.Role)
-                .WithMany(t => t.Users)
-                .HasForeignKey(b => b.RoleId)
-                 ;
+                .WithMany(t => t.UserRoles)
+                .HasForeignKey(e => e.RoleId);
 
             modelBuilder.Entity<RolePermission>()
                 .HasOne(b => b.Role)
@@ -72,3 +82,4 @@ namespace E_Commerce.Data
         }
     }
 }
+

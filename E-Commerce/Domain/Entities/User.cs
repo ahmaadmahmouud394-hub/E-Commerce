@@ -20,9 +20,11 @@ namespace E_Commerce.Domain.Entities
         public DateOnly BirthDate {  get; set; }
         public string? AvatarUrl { get; set; }
 
-        public int RoleId { get; set; }
-        [ForeignKey("RoleId")]
-        public virtual Role? Role { get; set; }
+        //public int RoleId { get; set; }
+        //[ForeignKey("RoleId")]
+        //public virtual Role? Role { get; set; }
+
+        public virtual ICollection<UserRole> UserRoles { get; set; }
 
         public virtual ICollection<Invoice> Invoices { get; set; }
     }
