@@ -55,7 +55,12 @@ builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
-
+var tempHasher = new PasswordHasher<User>();
+var adminPassword = "123";
+var hashedPassword = tempHasher.HashPassword(new User(), adminPassword);
+Console.WriteLine("---- COPY THIS HASH ----");
+Console.WriteLine(hashedPassword);
+Console.WriteLine("--------------------------");
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

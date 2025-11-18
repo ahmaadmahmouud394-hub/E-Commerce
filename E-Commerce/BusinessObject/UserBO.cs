@@ -14,16 +14,16 @@ namespace E_Commerce.BusinessObject
         public void GetCreated(JsonObject user)
         {
             var UserCreate = new User();
-            UserCreate.UserName = user["username"].GetValue<string>();
-            UserCreate.Password = user["password"].GetValue<string>();
-            UserCreate.Email = user["email"].GetValue<string>();
-            UserCreate.Address = user["address"].GetValue<string>();
-            UserCreate.BirthDate = user["birthdate"].GetValue<DateOnly>();
-            UserCreate.AvatarUrl = user["avatarurl"].GetValue<string>();
-            UserCreate.Name = user["name"].GetValue<string>();
-            var Role = user["role"].GetValue<string>();
-            var role= _context.Roles.Where(a=>a.Name == Role).FirstOrDefault();
-            UserCreate.RoleId = role.Id;
+            UserCreate.UserName = user["username"]?.GetValue<string>();
+            UserCreate.Password = user["password"]?.GetValue<string>();
+            UserCreate.Email = user["email"]?.GetValue<string>();
+            UserCreate.Address = user["address"]?.GetValue<string>();
+            string v = user["birthdate"]?.GetValue<string?>();
+            UserCreate.BirthDate = v != null ? DateOnly.Parse(v) : null;
+            UserCreate.AvatarUrl = user["avatarurl"]?.GetValue<string>();
+            UserCreate.Name = user["name"]?.GetValue<string>();
+            UserCreate.RoleId = user["roleid"].GetValue<int>();
+            
             //adding to db
             _context.Users.Add(UserCreate);
             _context.SaveChanges();
