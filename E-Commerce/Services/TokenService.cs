@@ -24,26 +24,14 @@ namespace E_Commerce.Services
         }
 
         // This method is now updated
-        public string GenerateJwtToken(User user, List<Role> roles, IEnumerable<Permission> permissions)
+        public string GenerateJwtToken(int RoleId, int UserId)
         {
-            var claims = new List<Claim>
+            var Header = RoleId.ToString() + "|" + UserId.ToString();
+            var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Name, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-            };
-
-            // Add all roles as "role" claims
-            foreach (var role in roles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, role.Name));
-            }
-
-            // Add all unique permissions as "permission" claims
-            foreach (var perm in permissions)
-            {
-                claims.Add(new Claim("permission", perm.Name));
-            }
+            new Claim(JwtRegisteredClaimNames.Sub, Header),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+        };
 
             var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256);
 
@@ -55,6 +43,48 @@ namespace E_Commerce.Services
                 signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+        public TokenDto? ValidateAndGetUsername(string token)
+        {
+            var tokenDto = new TokenDto();
+            
+            if (string.IsNullOrEmpty(token))
+                return null;
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            try
+            {
+                var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = _key,
+
+                    ValidateIssuer = true,
+                    ValidIssuer = _issuer,
+
+                    ValidateAudience = true,
+                    ValidAudience = _audience,
+
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                }, out SecurityToken validatedToken);
+
+                // ✅ Extract the username (stored in "sub" claim)
+                var DecodedToken = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                string UserId = DecodedToken.Split("|").Last() ?? "";
+                tokenDto.UserId = int.Parse(UserId);
+                string Role = DecodedToken.Split("|").First() ?? "";
+                tokenDto.RoleId = int.Parse(Role);
+                
+
+
+                return tokenDto;
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }
