@@ -24,37 +24,38 @@ namespace E_Commerce.Services
         }
 
         // This method is now updated
-        public string GenerateJwtToken(User user, List<Role> roles, IEnumerable<Permission> permissions)
+        public string GenerateJwtToken(User user)
         {
-            var claims = new List<Claim>
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Name, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-            };
+            //var claims = new List<Claim>
+            //{
+            //    new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            //    new Claim(JwtRegisteredClaimNames.Name, user.UserName),
+            //    new Claim(JwtRegisteredClaimNames.Email, user.Email),
+            //};
 
-            // Add all roles as "role" claims
-            foreach (var role in roles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, role.Name));
-            }
+            //// Add all roles as "role" claims
+            //foreach (var role in roles)
+            //{
+            //    claims.Add(new Claim(ClaimTypes.Role, role.Name));
+            //}
 
-            // Add all unique permissions as "permission" claims
-            foreach (var perm in permissions)
-            {
-                claims.Add(new Claim("permission", perm.Name));
-            }
+            //// Add all unique permissions as "permission" claims
+            //foreach (var perm in permissions)
+            //{
+            //    claims.Add(new Claim("permission", perm.Name));
+            //}
 
-            var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256);
+            //var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken(
-                issuer: _issuer,
-                audience: _audience,
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(_minutes),
-                signingCredentials: creds);
+            //var token = new JwtSecurityToken(
+            //    issuer: _issuer,
+            //    audience: _audience,
+            //    claims: claims,
+            //    expires: DateTime.Now.AddMinutes(_minutes),
+            //    signingCredentials: creds);
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            //return new JwtSecurityTokenHandler().WriteToken(token);
+            return user.Name;
         }
     }
 }

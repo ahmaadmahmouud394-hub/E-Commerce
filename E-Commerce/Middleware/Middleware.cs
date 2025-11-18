@@ -356,7 +356,7 @@ namespace E_Commerce.Middleware
                 // Re-authenticate logic using the ID we have from session
                 if (Int32.TryParse(userIdString, out int ID))
                 {
-                    var user = new User();
+                    var user = new Domain.Entities.User();
                     user.Id = ID;
                     // This is likely calling a service to get the user/token and set session again
                     var userAuth = authBO.GetAuthenticated(user);
