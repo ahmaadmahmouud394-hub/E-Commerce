@@ -33,14 +33,14 @@ namespace E_Commerce.Services
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
-            var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256);
+            //var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken(
-                issuer: _issuer,
-                audience: _audience,
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(_minutes),
-                signingCredentials: creds);
+            //var token = new JwtSecurityToken(
+            //    issuer: _issuer,
+            //    audience: _audience,
+            //    claims: claims,
+            //    expires: DateTime.Now.AddMinutes(_minutes),
+            //    signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }

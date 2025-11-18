@@ -5,7 +5,7 @@ namespace E_Commerce.Data
 {
     public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
     {
-        public DbSet<User> Users { get; set; }
+        public DbSet<Domain.Entities.User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<RolePermission> RolePermissions { get; set; }
@@ -77,7 +77,7 @@ namespace E_Commerce.Data
                 }
             );
 
-            modelBuilder.Entity<User>()
+            modelBuilder.Entity<Domain.Entities.User>()
                 .HasOne(b => b.Role)
                 .WithMany(t => t.Users)
                 .HasForeignKey(b => b.RoleId)

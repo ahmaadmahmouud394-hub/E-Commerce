@@ -1,6 +1,7 @@
 ﻿using E_Commerce.Data;
 using E_Commerce.Domain.Entities;
 using System.Data.SqlClient;
+using System.Text.Json.Nodes;
 
 namespace E_Commerce.BusinessObject
 {
@@ -12,10 +13,20 @@ namespace E_Commerce.BusinessObject
         {
             _context = context;
         }
-        public User GetAuthenticated(User user)
+        public User GetAuthenticated(JsonObject Auth)
         {
-            var IsAuthenticated = _context.Users.Where(e => e.UserName == user.UserName && e.Password == user.Password).FirstOrDefault();
-            return IsAuthenticated;
+            var username= Auth["username"].GetValue<string>();
+            var password= Auth["password"].GetValue<string>();
+            var Email= Auth["email"].GetValue<string>();
+            if (Email == null) {
+                var IsAuthenticated = _context.Users.Where(e => e.UserName == username && e.Password == password).FirstOrDefault();
+                return IsAuthenticated;
+            }
+            else
+            {
+                var IsAuthenticated = _context.Users.Where(e => e.Email == Email && e.Password == password).FirstOrDefault();
+                return IsAuthenticated;
+            }
         }
     }
 }

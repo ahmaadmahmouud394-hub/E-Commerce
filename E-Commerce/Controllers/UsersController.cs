@@ -1,7 +1,6 @@
 ﻿using E_Commerce.BusinessObject;
 using E_Commerce.Data;
 using E_Commerce.Domain.Entities;
-using E_Commerce.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,16 +12,12 @@ using System.Threading.Tasks;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
-public class UserController : ControllerBase
+public class UsersController : ControllerBase
 {
-    private readonly AppDbContext _context;
-    private readonly IPasswordHasher<User> _passwordHasher;
     private readonly UserBO _userBo;
 
-    public UserController(AppDbContext context, IPasswordHasher<User> passwordHasher,UserBO userBO)
+    public UsersController(UserBO userBO)
     {
-        _context = context;
-        _passwordHasher = passwordHasher;
     }
     [Route("api/create/[controller]")]
     [HttpPost]
@@ -39,14 +34,14 @@ public class UserController : ControllerBase
     }
     [Route("api/Get/[controller]")]
     [HttpGet]
-    public List<User> GetUser()
+    public List<User> GetUsers()
     {
         var Users = _userBo.GetUsers();
         return Users;
     }
-    [Route("api/Get/Update/[controller]")]
+    [Route("api/Get/[controller]")]
     [HttpPost]
-    public IActionResult GetUpdateUser(JsonObject userid)
+    public IActionResult GetUser(JsonObject userid)
     {
         if (userid == null)
         {
@@ -58,6 +53,7 @@ public class UserController : ControllerBase
             return Ok(user);
         }
     }
+
     [Route("api/Update/[controller]")]
     [HttpPut]
     public IActionResult UpdateUser(JsonObject userid)
@@ -73,4 +69,18 @@ public class UserController : ControllerBase
         }
     }
 
+    [Route("api/Delete/[controller]")]
+    [HttpPut]
+    public IActionResult DeleteUser(JsonObject userid)
+    {
+        if (userid == null)
+        {
+            return BadRequest();
+        }
+        else
+        {
+            _userBo.GetDeleted(userid);
+            return Ok();
+        }
+    }
 }
