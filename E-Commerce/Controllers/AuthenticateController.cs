@@ -21,23 +21,21 @@ public class AuthenticateController : ControllerBase
         _tokenService = tokenService;
     }
     [HttpPost]
-    public IActionResult GetAuthenticated(JsonObject UserCredentials)
+    public IActionResult GetAuthenticated([FromBody] JsonObject userCredentials)
     {
-        if (UserCredentials == null)
+        if (userCredentials == null)
         {
-            return BadRequest();
+            return BadRequest("Invalid request data.");
+        }
+        var isAuth = _authBO.GetAuthenticated(userCredentials);
+        if (isAuth == null)
+        {
+            return Unauthorized("Authentication failed. Invalid email or password.");
         }
         else
         {
-            var isAuth =_authBO.GetAuthenticated(UserCredentials);
-            if (isAuth == null) { 
-            return BadRequest();
-            }
-            else
-            {
-                var token = _tokenService.GenerateJwtToken(isAuth.Id,isAuth.RoleId);
-                return Ok(token);
-            }
+            var token = _tokenService.GenerateJwtToken(isAuth.Id, isAuth.RoleId);
+            return Ok(new { Token = token });
         }
     }
 }

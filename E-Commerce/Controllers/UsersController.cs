@@ -10,7 +10,7 @@ using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/[controller]/[action]")]
 [Authorize]
 public class UsersController : ControllerBase
 {
@@ -19,7 +19,6 @@ public class UsersController : ControllerBase
     public UsersController(UserBO userBO)
     {
     }
-    [Route("api/create/[controller]")]
     [HttpPost]
     public IActionResult CreateUser(JsonObject user)
     {
@@ -32,14 +31,12 @@ public class UsersController : ControllerBase
             return Ok();
         }
     }
-    [Route("api/Get/[controller]")]
     [HttpGet]
     public List<User> GetUsers()
     {
         var Users = _userBo.GetUsers();
         return Users;
     }
-    [Route("api/Get/[controller]")]
     [HttpPost]
     public IActionResult GetUser(JsonObject userid)
     {
@@ -53,8 +50,6 @@ public class UsersController : ControllerBase
             return Ok(user);
         }
     }
-
-    [Route("api/Update/[controller]")]
     [HttpPut]
     public IActionResult UpdateUser(JsonObject userid)
     {
@@ -69,7 +64,6 @@ public class UsersController : ControllerBase
         }
     }
 
-    [Route("api/Delete/[controller]")]
     [HttpPut]
     public IActionResult DeleteUser(JsonObject userid)
     {

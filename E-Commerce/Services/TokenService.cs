@@ -1,4 +1,5 @@
-﻿using E_Commerce.Domain.Entities;
+﻿using E_Commerce.BusinessObject;
+using E_Commerce.Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Collections.Generic;
@@ -24,14 +25,17 @@ namespace E_Commerce.Services
         }
 
         // This method is now updated
-        public string GenerateJwtToken(int RoleId, int UserId)
+        public string GenerateJwtToken(int userId, int roleId)
         {
-            var Header = RoleId.ToString() + "|" + UserId.ToString();
-            var claims = new[]
+            //var Header = RoleId.ToString() + "|" + UserId.ToString();
+            var claims = new List<Claim>
             {
-            new Claim(JwtRegisteredClaimNames.Sub, Header),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-        };
+               //new Claim(JwtRegisteredClaimNames.Sub, Header),
+                new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
+                new Claim("RoleId", roleId.ToString()),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
 
             var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256);
 
