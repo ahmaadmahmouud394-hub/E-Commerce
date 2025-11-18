@@ -143,6 +143,98 @@ namespace E_Commerce.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Permissions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Permission to Read a user",
+                            Name = "Read-User"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Permission to create/Edit a user",
+                            Name = "Write-User"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Permission to Delete a user",
+                            Name = "Delete-User"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Permission to Read a role",
+                            Name = "Read-Role"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Description = "Permission to create/Edit a role",
+                            Name = "Write-Role"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Description = "Permission to Delete a role",
+                            Name = "Delete-Role"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Description = "Permission to Read a product",
+                            Name = "Read-Product"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Description = "Permission to create/Edit a product",
+                            Name = "Write-Product"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Description = "Permission to Delete a product",
+                            Name = "Delete-Product"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Description = "Permission to Read a brand",
+                            Name = "Read-Brand"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Description = "Permission to create/Edit a brand",
+                            Name = "Write-Brand"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Description = "Permission to Delete a brand",
+                            Name = "Delete-Brand"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            Description = "Permission to Read a category",
+                            Name = "Read-Category"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            Description = "Permission to create/Edit a category",
+                            Name = "Write-Category"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            Description = "Permission to Delete a category",
+                            Name = "Delete-Category"
+                        });
                 });
 
             modelBuilder.Entity("E_Commerce.Domain.Entities.Product", b =>
@@ -210,6 +302,20 @@ namespace E_Commerce.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Administrator with full permissions",
+                            Name = "Admin"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Customer with limited permissions",
+                            Name = "Customer"
+                        });
                 });
 
             modelBuilder.Entity("E_Commerce.Domain.Entities.RolePermission", b =>
@@ -233,6 +339,98 @@ namespace E_Commerce.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("RolePermissions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            PermissionId = 1,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            PermissionId = 2,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            PermissionId = 3,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            PermissionId = 4,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            PermissionId = 5,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            PermissionId = 6,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            PermissionId = 7,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            Id = 8,
+                            PermissionId = 8,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            Id = 9,
+                            PermissionId = 9,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            Id = 10,
+                            PermissionId = 10,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            Id = 11,
+                            PermissionId = 11,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            Id = 12,
+                            PermissionId = 12,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            Id = 13,
+                            PermissionId = 13,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            Id = 14,
+                            PermissionId = 14,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            Id = 15,
+                            PermissionId = 15,
+                            RoleId = 1
+                        });
                 });
 
             modelBuilder.Entity("E_Commerce.Domain.Entities.User", b =>
@@ -277,6 +475,19 @@ namespace E_Commerce.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Address = "123 Admin Street",
+                            BirthDate = new DateOnly(1990, 1, 1),
+                            Email = "admin@example.com",
+                            Name = "Admin User",
+                            Password = "AQAAAAIAAYagAAAAEHLveeuTI0BCPkw8snPk0ZKIOPTgBgpl88rDkbkQFgk7k9alASCIeJJBRiMigrK8sA==",
+                            RoleId = 1,
+                            UserName = "admin"
+                        });
                 });
 
             modelBuilder.Entity("E_Commerce.Domain.Entities.Facility", b =>
