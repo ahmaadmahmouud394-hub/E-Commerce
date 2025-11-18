@@ -28,5 +28,35 @@ namespace E_Commerce.BusinessObject
             _context.Users.Add(UserCreate);
             _context.SaveChanges();
         }
+        public List<User> GetUsers() { 
+            var users = new List<User>();
+            users = _context.Users.ToList();
+            return users;
+        }
+        public User GetUserById(JsonObject id) 
+        {
+            int iduser = id["username"].GetValue<int>();
+            var user = _context.Users.Where(a=>a.Id == iduser).FirstOrDefault();
+            return user;
+        }
+        public void GetUpdated(JsonObject user)
+        {
+            var finduser = new User();
+            finduser.Id = user["id"].GetValue<int>();
+            var UserUpdate = _context.Users.Where(a => a.Id == finduser.Id).FirstOrDefault();
+            UserUpdate.UserName = user["username"].GetValue<string>();
+            UserUpdate.Password = user["password"].GetValue<string>();
+            UserUpdate.Email = user["email"].GetValue<string>();
+            UserUpdate.Address = user["address"].GetValue<string>();
+            UserUpdate.BirthDate = user["birthdate"].GetValue<DateOnly>();
+            UserUpdate.AvatarUrl = user["avatarurl"].GetValue<string>();
+            UserUpdate.Name = user["name"].GetValue<string>();
+            var Role = user["role"].GetValue<string>();
+            var role = _context.Roles.Where(a => a.Name == Role).FirstOrDefault();
+            UserUpdate.RoleId = role.Id;
+            //adding to db
+            _context.Users.Update(UserUpdate);
+            _context.SaveChanges();
+        }
     }
 }

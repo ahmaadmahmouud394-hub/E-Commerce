@@ -1,7 +1,6 @@
 ﻿using E_Commerce.Data;
 using E_Commerce.Domain.Entities;
 using E_Commerce.Services;
-using E_Commerce.Models.DTO;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

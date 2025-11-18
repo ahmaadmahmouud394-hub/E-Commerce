@@ -1,7 +1,7 @@
-﻿using E_Commerce.Data;
+﻿using E_Commerce.BusinessObject;
+using E_Commerce.Data;
 using E_Commerce.Domain.Entities;
 using E_Commerce.Domain.Enums;
-using E_Commerce.Models.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,46 +17,60 @@ public class UserController : ControllerBase
 {
     private readonly AppDbContext _context;
     private readonly IPasswordHasher<User> _passwordHasher;
+    private readonly UserBO _userBo;
 
-    public UserController(AppDbContext context, IPasswordHasher<User> passwordHasher)
+    public UserController(AppDbContext context, IPasswordHasher<User> passwordHasher,UserBO userBO)
     {
         _context = context;
         _passwordHasher = passwordHasher;
     }
-
+    [Route("api/create/[controller]")]
     [HttpPost]
-    [Route("api/[controller]/create/user")]
-    public async Task<IActionResult> CreateUser(JsonObject user)
+    public IActionResult CreateUser(JsonObject user)
     {
         if (user == null) { 
             return BadRequest();
         }
         else
         {
-
+            _userBo.GetCreated(user);
+            return Ok();
         }
-
-            user.Password = _passwordHasher.HashPassword(user, user.Password);
-
-        if (await _context.Users.AnyAsync(u => u.UserName == user.UserName || u.Email == user.Email))
-        {
-            return BadRequest("Username or Email already exists.");
-        }
-
-        _context.Users.Add(user);
-        await _context.SaveChangesAsync(); // Save user to get their new ID
-
-        // Loop through the list of RoleIds from the request and assign them
-        foreach (var roleId in request.RoleIds.Distinct()) // Use .Distinct() for safety
-        {
-            if (await _context.Roles.AnyAsync(r => r.Id == roleId))
-            {
-                //_context.UserRoles.Add(new UserRole { UserId = user.Id, RoleId = roleId });
-            }
-        }
-        await _context.SaveChangesAsync();
-
-        user.Password = "";
-        return Ok(user);
     }
+    [Route("api/Get/[controller]")]
+    [HttpGet]
+    public List<User> GetUser()
+    {
+        var Users = _userBo.GetUsers();
+        return Users;
+    }
+    [Route("api/Get/Update/[controller]")]
+    [HttpPost]
+    public IActionResult GetUpdateUser(JsonObject userid)
+    {
+        if (userid == null)
+        {
+            return BadRequest();
+        }
+        else
+        {
+            var user = _userBo.GetUserById(userid);
+            return Ok(user);
+        }
+    }
+    [Route("api/Update/[controller]")]
+    [HttpPut]
+    public IActionResult UpdateUser(JsonObject userid)
+    {
+        if (userid == null)
+        {
+            return BadRequest();
+        }
+        else
+        {
+             _userBo.GetUpdated(userid);
+            return Ok();
+        }
+    }
+
 }
