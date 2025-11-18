@@ -7,37 +7,36 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
-public class AdminController : ControllerBase
+public class UserController : ControllerBase
 {
     private readonly AppDbContext _context;
     private readonly IPasswordHasher<User> _passwordHasher;
 
-    public AdminController(AppDbContext context, IPasswordHasher<User> passwordHasher)
+    public UserController(AppDbContext context, IPasswordHasher<User> passwordHasher)
     {
         _context = context;
         _passwordHasher = passwordHasher;
     }
 
-    [HttpPost("users")]
-    //[HasPermission(PermissionsEnum.UserCreate)]
-    public async Task<IActionResult> CreateUser([FromBody] CreateUserRequestDto request)
+    [HttpPost]
+    [Route("api/[controller]/create/user")]
+    public async Task<IActionResult> CreateUser(JsonObject user)
     {
-        var user = new User
+        if (user == null) { 
+            return BadRequest();
+        }
+        else
         {
-            Name = request.Name,
-            Email = request.Email,
-            Password = request.Password,
-            Address = request.Address,
-            UserName = request.UserName,
-            BirthDate = request.BirthDate,
-        };
 
-        user.Password = _passwordHasher.HashPassword(user, user.Password);
+        }
+
+            user.Password = _passwordHasher.HashPassword(user, user.Password);
 
         if (await _context.Users.AnyAsync(u => u.UserName == user.UserName || u.Email == user.Email))
         {

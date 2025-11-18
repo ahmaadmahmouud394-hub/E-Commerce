@@ -42,7 +42,6 @@ namespace E_Commerce.Middleware
             var Role = _appDbContext.Roles.Where(a => a.Name == roleName).FirstOrDefault();
             var token = context.Session.GetString("token");
             //------------------------------------checking permessions----------------------------------
-
             if (path.ToLower().Contains("/delete") || path.ToLower().Contains("/update") || path.ToLower().Contains("/Create") || path.ToLower().Contains("/"))
             {
                 //------------------Users
@@ -85,7 +84,7 @@ namespace E_Commerce.Middleware
                     }
                 }
                 //------Read ------ Users
-                if (path.ToLower().Contains("/read") && path.ToLower().Contains("/users"))
+                if (path.ToLower().Contains("/") && path.ToLower().Contains("/users"))
                 {
                     var hasPermission = (from rp in _appDbContext.RolePermissions
                                          join p in _appDbContext.Permissions
@@ -143,7 +142,7 @@ namespace E_Commerce.Middleware
                     }
                 }
                 //------Read ------ Products
-                if (path.ToLower().Contains("/read") && path.ToLower().Contains("/products"))
+                if (path.ToLower().Contains("/") && path.ToLower().Contains("/products"))
                 {
                     var hasPermission = (from rp in _appDbContext.RolePermissions
                                          join p in _appDbContext.Permissions
@@ -201,7 +200,7 @@ namespace E_Commerce.Middleware
                     }
                 }
                 //----- Read ------ Brands
-                if (path.ToLower().Contains("/read") && path.ToLower().Contains("/brands"))
+                if (path.ToLower().Contains("/") && path.ToLower().Contains("/brands"))
                 {
                     var hasPermission = (from rp in _appDbContext.RolePermissions
                                          join p in _appDbContext.Permissions
@@ -259,7 +258,7 @@ namespace E_Commerce.Middleware
                     }
                 }
                 //----- Read ------ Categories
-                if (path.ToLower().Contains("/read") && path.ToLower().Contains("/categories"))
+                if (path.ToLower().Contains("/") && path.ToLower().Contains("/categories"))
                 {
                     var hasPermission = (from rp in _appDbContext.RolePermissions
                                          join p in _appDbContext.Permissions
