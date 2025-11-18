@@ -1,43 +1,80 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using E_Commerce.BusinessObject;
+using E_Commerce.Domain.Entities;
+using Microsoft.AspNetCore.Mvc;
+using System.Text.Json.Nodes;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace E_Commerce.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class CategoriesController : ControllerBase
     {
-        // GET: api/<Categories>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly CategoriesBO _CategoriesBO;
+        public CategoriesController(CategoriesBO categoriesBO)
         {
-            return new string[] { "value1", "value2" };
+            _CategoriesBO = categoriesBO;
         }
-
-        // GET api/<Categories>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST api/<Categories>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult CreateCategory(JsonObject category)
         {
+            if (category == null)
+            {
+                return BadRequest();
+            }
+            else
+            {
+                _CategoriesBO.GetCreated(category);
+                return Ok();
+            }
+        }
+        [HttpGet]
+        public List<Category> GetAllCategories()
+        {
+            var categories = _CategoriesBO.GetCategories();
+            return categories;
+        }
+        [HttpPost]
+        public IActionResult GetCategory(JsonObject CategoryId)
+        {
+            if (CategoryId == null)
+            {
+                return BadRequest();
+            }
+            else
+            {
+                var Category = _CategoriesBO.GetCategoryById(CategoryId);
+                return Ok(Category);
+            }
+        }
+        [HttpPut]
+        public IActionResult UpdateCategory(JsonObject CategoryId)
+        {
+            if (CategoryId == null)
+            {
+                return BadRequest();
+            }
+            else
+            {
+                _CategoriesBO.GetUpdated(CategoryId);
+                return Ok();
+            }
         }
 
-        // PUT api/<Categories>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpDelete]
+        public IActionResult DeleteCategory(JsonObject CategoryId)
         {
-        }
+            if (CategoryId == null)
+            {
+                return BadRequest();
+            }
+            else
+            {
+                _CategoriesBO.GetDeleted(CategoryId);
+                return Ok();
+            }
 
-        // DELETE api/<Categories>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }

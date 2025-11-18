@@ -21,7 +21,7 @@ public class AuthenticateController : ControllerBase
         _tokenService = tokenService;
     }
     [HttpPost]
-    public IActionResult GetAuthenticated([FromBody] JsonObject userCredentials)
+    public IActionResult GetAuthenticated(JsonObject userCredentials)
     {
         if (userCredentials == null)
         {

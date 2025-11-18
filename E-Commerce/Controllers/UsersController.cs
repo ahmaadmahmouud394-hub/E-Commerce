@@ -18,6 +18,7 @@ public class UsersController : ControllerBase
 
     public UsersController(UserBO userBO)
     {
+        _userBo = userBO;
     }
     [HttpPost]
     public IActionResult CreateUser(JsonObject user)
@@ -64,7 +65,7 @@ public class UsersController : ControllerBase
         }
     }
 
-    [HttpPut]
+    [HttpDelete]
     public IActionResult DeleteUser(JsonObject userid)
     {
         if (userid == null)
