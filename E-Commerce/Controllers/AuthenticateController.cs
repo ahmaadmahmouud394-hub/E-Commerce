@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text.Json.Nodes;
 
 [ApiController]
-[Route("/api/[controller]")]
+[Route("/api/[controller]/[action]")]
 public class AuthenticateController : ControllerBase
 {
  private readonly AuthenticationBO _authBO;
@@ -20,7 +20,6 @@ public class AuthenticateController : ControllerBase
         _authBO = authBO;
         _tokenService = tokenService;
     }
-    [Route("api/create/[controller]")]
     [HttpPost]
     public IActionResult GetAuthenticated(JsonObject UserCredentials)
     {
@@ -36,9 +35,9 @@ public class AuthenticateController : ControllerBase
             }
             else
             {
-                var token = _tokenService.GenerateJwtToken(isAuth);
+                var token = _tokenService.GenerateJwtToken(isAuth.Id,isAuth.RoleId);
+                return Ok(token);
             }
-                return Ok();
         }
     }
 }

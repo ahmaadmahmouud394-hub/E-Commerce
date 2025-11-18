@@ -15,9 +15,9 @@ namespace E_Commerce.BusinessObject
         }
         public User GetAuthenticated(JsonObject Auth)
         {
-            var username= Auth["username"].GetValue<string>();
-            var password= Auth["password"].GetValue<string>();
-            var Email= Auth["email"].GetValue<string>();
+            var username= Auth["username"]?.GetValue<string>();
+            var password= Auth["password"]?.GetValue<string>();
+            var Email= Auth["email"]?.GetValue<string>();
             if (Email == null) {
                 var IsAuthenticated = _context.Users.Where(e => e.UserName == username && e.Password == password).FirstOrDefault();
                 return IsAuthenticated;
