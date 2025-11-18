@@ -18,6 +18,7 @@ public class UsersController : ControllerBase
 
     public UsersController(UserBO userBO)
     {
+        _userBo = userBO;
     }
     [HttpPost]
     public IActionResult CreateUser(JsonObject user)

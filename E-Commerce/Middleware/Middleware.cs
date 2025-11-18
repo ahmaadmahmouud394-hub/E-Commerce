@@ -64,11 +64,11 @@ namespace E_Commerce.Middleware
             //}
             string requiredPermission = "";
             string resource = "";
-            if (path.ToLower().StartsWith("/api/user")) resource = "User";
-            else if (path.ToLower().StartsWith("/api/role")) resource = "Role";
-            else if (path.ToLower().StartsWith("/api/product")) resource = "Product";
-            else if (path.ToLower().StartsWith("/api/brand")) resource = "Brand";
-            else if (path.ToLower().StartsWith("/api/category")) resource = "Category";
+            if (path.StartsWith("/api/user")) resource = "User";
+            else if (path.StartsWith("/api/role")) resource = "Role";
+            else if (path.StartsWith("/api/product")) resource = "Product";
+            else if (path.StartsWith("/api/brand")) resource = "Brand";
+            else if (path.StartsWith("/api/category")) resource = "Category";
 
             if (!string.IsNullOrEmpty(resource))
             {
@@ -424,7 +424,7 @@ namespace E_Commerce.Middleware
                 //    }
                 //}
                 // The rest of the requests (authenticated and authorized) proceed
-                await _next(context);
+                //await _next(context);
         }
     }
 }

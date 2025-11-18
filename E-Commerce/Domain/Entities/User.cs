@@ -20,7 +20,7 @@ namespace E_Commerce.Domain.Entities
         public string Address { get; set; } = string.Empty;
         [Required]
         public string UserName { get; set; } = string.Empty;
-        public DateOnly BirthDate {  get; set; }
+        public DateOnly? BirthDate {  get; set; }
         public string? AvatarUrl { get; set; }
         public virtual ICollection<Invoice> Invoices { get; set; }
     }
