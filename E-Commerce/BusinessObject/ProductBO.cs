@@ -36,7 +36,7 @@ namespace E_Commerce.BusinessObject
             _context.Products.Add(ProductCreate);
             _context.SaveChanges();
 
-            var base64Image = product["image"]?.GetValue<string>();
+            var base64Image = product["image"]?.GetValue<byte[]>();
 
             
                 // Save Facility
@@ -90,7 +90,7 @@ namespace E_Commerce.BusinessObject
             //adding to db
             _context.Products.Update(ProductUpdate);
             _context.SaveChanges();
-            var base64Image = product["image"]?.GetValue<string>();
+            var base64Image = product["image"]?.GetValue<byte[]>();
 
 
             // Save Facility

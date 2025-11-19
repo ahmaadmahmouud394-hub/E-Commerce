@@ -20,7 +20,7 @@ namespace E_Commerce.BusinessObject
             BrandCreate.Name = brand["name"].GetValue<string>();
             BrandCreate.Description= brand["description"].GetValue<string>();
             BrandCreate.Slogan = brand["slogan"]?.GetValue<string>();
-            var image64base = brand["photourl"].GetValue<string>();
+            var image64base = brand["photourl"].GetValue<byte[]>();
             BrandCreate.PhotoUrl = _imageHandler.HandledURL(image64base,"brands");
             //adding to db
             _context.Brands.Add(BrandCreate);
@@ -45,7 +45,7 @@ namespace E_Commerce.BusinessObject
             BrandUpdate.Name = brand["name"].GetValue<string>();
             BrandUpdate.Description = brand["description"].GetValue<string>();
             BrandUpdate.Slogan = brand["slogan"]?.GetValue<string>();
-            var image64base = brand["photourl"].GetValue<string>();
+            var image64base = brand["photourl"].GetValue<byte[]>();
             BrandUpdate.PhotoUrl = _imageHandler.HandledURL(image64base, "brands");
             _context.Brands.Update(BrandUpdate);
             _context.SaveChanges();

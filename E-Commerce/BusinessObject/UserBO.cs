@@ -59,7 +59,7 @@ namespace E_Commerce.BusinessObject
             UserUpdate.Name = user["name"].GetValue<string>();
             var Role = user["role"].GetValue<string>();
 
-            var byteimage = user["image"].GetValue<string>();
+            var byteimage = user["image"].GetValue<byte[]>();
             UserUpdate.AvatarUrl = _imageHandler.HandledURL(byteimage, "users");
 
             var role = _context.Roles.Where(a => a.Name == Role).FirstOrDefault();
