@@ -26,7 +26,7 @@ namespace E_Commerce.BusinessObject
             UserCreate.AvatarUrl = user["avatarurl"]?.GetValue<string>();
             UserCreate.Name = user["name"]?.GetValue<string>();
             UserCreate.RoleId = user["roleid"].GetValue<int>();
-            var byteimage = user["image"].GetValue<string>();
+            var byteimage = user["image"].GetValue<byte[]>();
             UserCreate.AvatarUrl = _imageHandler.HandledURL(byteimage, "users");
                 //adding to db
             _context.Users.Add(UserCreate);
