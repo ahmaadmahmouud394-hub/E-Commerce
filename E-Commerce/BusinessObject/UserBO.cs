@@ -39,7 +39,7 @@ namespace E_Commerce.BusinessObject
         }
         public User GetUserById(JsonObject id) 
         {
-            int iduser = id["username"].GetValue<int>();
+            int iduser = id["id"].GetValue<int>();
             var user = _context.Users.Where(a=>a.Id == iduser).FirstOrDefault();
             return user;
         }
@@ -52,7 +52,9 @@ namespace E_Commerce.BusinessObject
             UserUpdate.Password = user["password"].GetValue<string>();
             UserUpdate.Email = user["email"].GetValue<string>();
             UserUpdate.Address = user["address"].GetValue<string>();
-            UserUpdate.BirthDate = user["birthdate"].GetValue<DateOnly>();
+            //UserUpdate.BirthDate = user["birthdate"].GetValue<DateOnly>();
+            string v = user["birthdate"]?.GetValue<string?>();
+            UserUpdate.BirthDate = v != null ? DateOnly.Parse(v) : null;
             UserUpdate.AvatarUrl = user["avatarurl"].GetValue<string>();
             UserUpdate.Name = user["name"].GetValue<string>();
             var Role = user["role"].GetValue<string>();

@@ -26,10 +26,10 @@ namespace E_Commerce.BusinessObject
             Categories = _context.Categories.ToList();
             return Categories;
         }
-        public Brand GetCategoryById(JsonObject id)
+        public Category GetCategoryById(JsonObject id)
         {
             int idCategory = id["id"].GetValue<int>();
-            var Category = _context.Brands.Find(idCategory);
+            var Category = _context.Categories.Find(idCategory);
             return Category;
         }
         public void GetUpdated(JsonObject Category)
