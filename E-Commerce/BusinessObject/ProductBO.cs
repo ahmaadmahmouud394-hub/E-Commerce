@@ -1,5 +1,7 @@
 ﻿using E_Commerce.Data;
 using E_Commerce.Domain.Entities;
+using E_Commerce.Services;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Nodes;
 
 namespace E_Commerce.BusinessObject
@@ -7,9 +9,11 @@ namespace E_Commerce.BusinessObject
     public class ProductBO
     {
         private readonly AppDbContext _context;
-        public ProductBO(AppDbContext context)
+        private readonly ImageHandler _imageHandler;
+        public ProductBO(AppDbContext context,ImageHandler imageHandler)
         {
             _context = context;
+            _imageHandler = imageHandler;
         }
         public void GetCreated(JsonObject product)
         {
@@ -32,44 +36,37 @@ namespace E_Commerce.BusinessObject
 
             var base64Image = product["image"]?.GetValue<string>();
 
-            if (!string.IsNullOrEmpty(base64Image))
-            {
-                byte[] imageBytes = Convert.FromBase64String(base64Image);
-
-                // Create folder path
-                string folderPath = Path.Combine("wwwroot", "images", "products");
-                if (!Directory.Exists(folderPath))
-                    Directory.CreateDirectory(folderPath);
-
-                // Create unique filename
-                    string fileName = $"{Guid.NewGuid()}.jpg";
-                string filePath = Path.Combine(folderPath, fileName);
-
-                // Save to disk
-                File.WriteAllBytes(filePath, imageBytes);
-
-                // Save URL in DB
+            
+                // Save Facility
                 var facility = new Facility
                 {
                     Alt = "product-image",
-                    ImageUrl = $"{folderPath}/{fileName}",
+                    ImageUrl = _imageHandler.HandledURL(base64Image,"products"),
                     ProductId = ProductCreate.Id
                 };
 
                 _context.Facilities.Add(facility);
                 _context.SaveChanges();
-            }
+            
         }
         public List<Product> GetProducts()
         {
             var products = new List<Product>();
-            products = _context.Products.ToList();
+            products = _context.Products
+                .Include(x => x.CategoryId)
+                .Include(x => x.BrandId)
+                .Include(x=>x.Facilities)
+                .ToList();
             return products;
         }
-        public Domain.Entities.Product GetProductById(JsonObject id)
+        public Product GetProductById(JsonObject id)
         {
             int idproduct = id["name"].GetValue<int>();
-            var product = _context.Products.Where(a => a.Id == idproduct).FirstOrDefault();
+            var product = _context.Products.Where(a => a.Id == idproduct)
+                .Include(x => x.CategoryId)
+                .Include(x => x.BrandId)
+                .Include(x => x.Facilities)
+                .FirstOrDefault();
             return product;
         }
         public void GetUpdated(JsonObject product)
@@ -90,6 +87,19 @@ namespace E_Commerce.BusinessObject
             //adding to db
             _context.Products.Update(ProductUpdate);
             _context.SaveChanges();
+            var base64Image = product["image"]?.GetValue<string>();
+
+
+            // Save Facility
+            var facility = new Facility
+            {
+                Alt = "product-image",
+                ImageUrl = _imageHandler.HandledURL(base64Image, "products"),
+                ProductId = ProductUpdate.Id
+            };
+
+            _context.Facilities.Add(facility);
+            _context.SaveChanges();
         }
 
         public bool GetDeleted(JsonObject idjson)
@@ -97,10 +107,12 @@ namespace E_Commerce.BusinessObject
             var id = idjson["id"].GetValue<int>();
 
             var Product = _context.Products.Find(id);
+            var images = _context.Facilities.Where(a=>a.ProductId == id).ToList();
 
             if (Product != null)
             {
                 _context.Products.Remove(Product);
+                _context.Facilities.RemoveRange(images);
                 _context.SaveChanges();
                 return true;
             }

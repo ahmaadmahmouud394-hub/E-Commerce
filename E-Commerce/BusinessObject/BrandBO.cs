@@ -1,5 +1,6 @@
 ﻿using E_Commerce.Data;
 using E_Commerce.Domain.Entities;
+using E_Commerce.Services;
 using System.Text.Json.Nodes;
 
 namespace E_Commerce.BusinessObject
@@ -7,9 +8,11 @@ namespace E_Commerce.BusinessObject
     public class BrandBO
     {
         private readonly AppDbContext _context;
-        public BrandBO(AppDbContext context)
+        private readonly ImageHandler _imageHandler;
+        public BrandBO(AppDbContext context,ImageHandler imageHandler)
         {
             _context = context;
+            _imageHandler = imageHandler;
         }
         public void GetCreated(JsonObject brand)
         {
@@ -17,7 +20,8 @@ namespace E_Commerce.BusinessObject
             BrandCreate.Name = brand["name"].GetValue<string>();
             BrandCreate.Description= brand["description"].GetValue<string>();
             BrandCreate.Slogan = brand["slogan"]?.GetValue<string>();
-            BrandCreate.PhotoUrl = brand["photourl"].GetValue<string>();
+            var image64base = brand["photourl"].GetValue<string>();
+            BrandCreate.PhotoUrl = _imageHandler.HandledURL(image64base,"brands");
             //adding to db
             _context.Brands.Add(BrandCreate);
             _context.SaveChanges();

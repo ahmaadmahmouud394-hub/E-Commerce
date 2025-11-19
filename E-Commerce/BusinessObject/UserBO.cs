@@ -1,15 +1,18 @@
 ﻿using E_Commerce.Data;
 using System.Text.Json.Nodes;
 using E_Commerce.Domain.Entities;
+using E_Commerce.Services;
 
 namespace E_Commerce.BusinessObject
 {
     public class UserBO
     {
         private readonly AppDbContext _context;
-        public UserBO(AppDbContext context)
+        private readonly ImageHandler _imageHandler;
+        public UserBO(AppDbContext context,ImageHandler img)
         {
             _context = context;
+            _imageHandler = img;
         }
         public void GetCreated(JsonObject user)
         {
@@ -23,8 +26,9 @@ namespace E_Commerce.BusinessObject
             UserCreate.AvatarUrl = user["avatarurl"]?.GetValue<string>();
             UserCreate.Name = user["name"]?.GetValue<string>();
             UserCreate.RoleId = user["roleid"].GetValue<int>();
-            
-            //adding to db
+            var byteimage = user["image"].GetValue<string>();
+            UserCreate.AvatarUrl = _imageHandler.HandledURL(byteimage, "users");
+                //adding to db
             _context.Users.Add(UserCreate);
             _context.SaveChanges();
         }
@@ -33,7 +37,7 @@ namespace E_Commerce.BusinessObject
             users = _context.Users.ToList();
             return users;
         }
-        public Domain.Entities.User GetUserById(JsonObject id) 
+        public User GetUserById(JsonObject id) 
         {
             int iduser = id["username"].GetValue<int>();
             var user = _context.Users.Where(a=>a.Id == iduser).FirstOrDefault();
@@ -41,7 +45,7 @@ namespace E_Commerce.BusinessObject
         }
         public void GetUpdated(JsonObject user)
         {
-            var finduser = new Domain.Entities.User();
+            var finduser = new User();
             finduser.Id = user["id"].GetValue<int>();
             var UserUpdate = _context.Users.Where(a => a.Id == finduser.Id).FirstOrDefault();
             UserUpdate.UserName = user["username"].GetValue<string>();
@@ -52,6 +56,10 @@ namespace E_Commerce.BusinessObject
             UserUpdate.AvatarUrl = user["avatarurl"].GetValue<string>();
             UserUpdate.Name = user["name"].GetValue<string>();
             var Role = user["role"].GetValue<string>();
+
+            var byteimage = user["image"].GetValue<string>();
+            UserUpdate.AvatarUrl = _imageHandler.HandledURL(byteimage, "users");
+
             var role = _context.Roles.Where(a => a.Name == Role).FirstOrDefault();
             UserUpdate.RoleId = role.Id;
             //adding to db
