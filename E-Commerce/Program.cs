@@ -31,6 +31,7 @@ builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<BrandBO>();
 builder.Services.AddScoped<ProductBO>();
 builder.Services.AddScoped<RoleBO>();
+builder.Services.AddScoped<ImageHandler>();
 builder.Services.AddScoped<CategoriesBO>();
 builder.Services.AddScoped<AuthenticationBO>();
 builder.Services.AddScoped<UserBO>();
