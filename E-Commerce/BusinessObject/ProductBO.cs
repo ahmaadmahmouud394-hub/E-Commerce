@@ -14,6 +14,7 @@ namespace E_Commerce.BusinessObject
         public void GetCreated(JsonObject product)
         {
             var ProductCreate = new Product();
+
             ProductCreate.Name = product["name"]?.GetValue<string>();
             ProductCreate.Description = product["description"]?.GetValue<string>();
             ProductCreate.Price = product["price"]?.GetValue<decimal>() ?? 0;
@@ -28,6 +29,36 @@ namespace E_Commerce.BusinessObject
             //adding to db
             _context.Products.Add(ProductCreate);
             _context.SaveChanges();
+
+            var base64Image = product["image"]?.GetValue<string>();
+
+            if (!string.IsNullOrEmpty(base64Image))
+            {
+                byte[] imageBytes = Convert.FromBase64String(base64Image);
+
+                // Create folder path
+                string folderPath = Path.Combine("wwwroot", "images", "products");
+                if (!Directory.Exists(folderPath))
+                    Directory.CreateDirectory(folderPath);
+
+                // Create unique filename
+                    string fileName = $"{Guid.NewGuid()}.jpg";
+                string filePath = Path.Combine(folderPath, fileName);
+
+                // Save to disk
+                File.WriteAllBytes(filePath, imageBytes);
+
+                // Save URL in DB
+                var facility = new Facility
+                {
+                    Alt = "product-image",
+                    ImageUrl = $"{folderPath}/{fileName}",
+                    ProductId = ProductCreate.Id
+                };
+
+                _context.Facilities.Add(facility);
+                _context.SaveChanges();
+            }
         }
         public List<Product> GetProducts()
         {

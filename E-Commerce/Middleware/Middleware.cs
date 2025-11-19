@@ -64,11 +64,11 @@ namespace E_Commerce.Middleware
             //}
             string requiredPermission = "";
             string resource = "";
-            if (path.StartsWith("/api/user")) resource = "User";
-            else if (path.StartsWith("/api/role")) resource = "Role";
-            else if (path.StartsWith("/api/product")) resource = "Product";
-            else if (path.StartsWith("/api/brand")) resource = "Brand";
-            else if (path.StartsWith("/api/category")) resource = "Category";
+            if (path.StartsWith("/api/users")) resource = "User";
+            else if (path.StartsWith("/api/roles")) resource = "Role";
+            else if (path.StartsWith("/api/products")) resource = "Product";
+            else if (path.StartsWith("/api/brands")) resource = "Brand";
+            else if (path.StartsWith("/api/categories")) resource = "Category";
 
             if (!string.IsNullOrEmpty(resource))
             {
