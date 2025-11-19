@@ -1,5 +1,6 @@
 ﻿using E_Commerce.Data;
 using E_Commerce.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Nodes;
 
 namespace E_Commerce.BusinessObject
@@ -31,8 +32,10 @@ namespace E_Commerce.BusinessObject
         }
         public List<Product> GetProducts()
         {
-            var products = new List<Product>();
-            products = _context.Products.ToList();
+            var products = _context.Products
+                .Include(p => p.Category)   
+                .Include(p => p.Brand)      
+                .ToList();
             return products;
         }
         public Domain.Entities.Product GetProductById(JsonObject id)
