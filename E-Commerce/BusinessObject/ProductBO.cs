@@ -21,7 +21,9 @@ namespace E_Commerce.BusinessObject
             ProductCreate.Quantity = product["quantity"]?.GetValue<int>() ?? 0;
             ProductCreate.InWarranty = product["inwarranty"]?.GetValue<bool>() ?? false;
             ProductCreate.WarrantyDescription = product["warrantydescription"]?.GetValue<string>();
-            ProductCreate.WarrantyMaxDate = product["warrantymmaxdate"]?.GetValue<DateOnly>() ?? DateOnly.MinValue;
+            //ProductCreate.WarrantyMaxDate = product["warrantymmaxdate"]?.GetValue<DateOnly>() ?? DateOnly.MinValue;
+            string v = product["WarrantyMaxDate"]?.GetValue<string?>();
+            ProductCreate.WarrantyMaxDate = v != null ? DateOnly.Parse(v) : DateOnly.MinValue;
             ProductCreate.CategoryId = product["categoryid"]?.GetValue<int>() ?? 0;
             ProductCreate.BrandId = product["brandid"]?.GetValue<int>() ?? 0;
 
@@ -68,7 +70,7 @@ namespace E_Commerce.BusinessObject
         }
         public Domain.Entities.Product GetProductById(JsonObject id)
         {
-            int idproduct = id["name"].GetValue<int>();
+            int idproduct = id["id"].GetValue<int>();
             var product = _context.Products.Where(a => a.Id == idproduct).FirstOrDefault();
             return product;
         }
@@ -83,7 +85,9 @@ namespace E_Commerce.BusinessObject
             ProductUpdate.Quantity = product["quantity"]?.GetValue<int>() ?? 0;
             ProductUpdate.InWarranty = product["inwarranty"]?.GetValue<bool>() ?? false;
             ProductUpdate.WarrantyDescription = product["warrantydescription"]?.GetValue<string>();
-            ProductUpdate.WarrantyMaxDate = product["warrantymmaxdate"]?.GetValue<DateOnly>() ?? DateOnly.MinValue;
+            //ProductUpdate.WarrantyMaxDate = product["warrantymmaxdate"]?.GetValue<DateOnly>() ?? DateOnly.MinValue;
+            string v = product["WarrantyMaxDate"]?.GetValue<string?>();
+            ProductUpdate.WarrantyMaxDate = v != null ? DateOnly.Parse(v) : DateOnly.MinValue;
             ProductUpdate.CategoryId = product["categoryid"]?.GetValue<int>() ?? 0;
             ProductUpdate.BrandId = product["brandid"]?.GetValue<int>() ?? 0;
 

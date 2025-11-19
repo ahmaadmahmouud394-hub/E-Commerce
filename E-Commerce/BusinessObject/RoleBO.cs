@@ -1,72 +1,118 @@
 ﻿using E_Commerce.Data;
 using E_Commerce.Domain.Entities;
-using System.Text.Json.Nodes;
+using E_Commerce.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace E_Commerce.BusinessObject
 {
     public class RoleBO
     {
         private readonly AppDbContext _context;
+
         public RoleBO(AppDbContext context)
         {
             _context = context;
         }
-        //public void GetCreated(JsonObject user)
-        //{
-        //    var RoleCreate = new Role();
-        //    RoleCreate.Name = user["name"].GetValue<string>();
-        //    RoleCreate.Description = user["description"].GetValue<string>();
-        //    _context.Users.Add(RoleCreate);
-        //    _context.SaveChanges();
-        //}
-        public List<User> GetUsers()
+
+        public int CreateRole(CreateRoleDto request)
         {
-            var users = new List<User>();
-            users = _context.Users.ToList();
-            return users;
+            if (_context.Roles.Any(r => r.Name == request.Name))
+                throw new InvalidOperationException($"Role '{request.Name}' already exists.");
+
+            var newRole = new Role
+            {
+                Name = request.Name,
+                Description = request.Description,
+            };
+
+            _context.Roles.Add(newRole);
+            _context.SaveChanges();
+
+            if (request.PermissionIds.Any())
+            {
+                var newPermissions = request.PermissionIds
+                    .Select(permId => new RolePermission { RoleId = newRole.Id, PermissionId = permId })
+                    .ToList();
+
+                _context.RolePermissions.AddRange(newPermissions);
+                _context.SaveChanges();
+            }
+            return newRole.Id;
         }
-        public Domain.Entities.User GetUserById(JsonObject id)
+
+
+        public List<RoleResponseDto> GetRoles()
         {
-            int iduser = id["username"].GetValue<int>();
-            var user = _context.Users.Where(a => a.Id == iduser).FirstOrDefault();
-            return user;
+            return _context.Roles
+                .Include(r => r.RolePermissions!)
+                .ThenInclude(rp => rp.Permission)
+                .Select(r => new RoleResponseDto
+                {
+                    Id = r.Id,
+                    Name = r.Name,
+                    Description = r.Description,
+                    Permissions = r.RolePermissions!
+                        .Select(rp => rp.Permission!.Name)
+                        .ToList()
+                })
+                .ToList();
         }
-        public void GetUpdated(JsonObject user)
+
+        public RoleResponseDto? GetRoleById(int id)
         {
-            var finduser = new Domain.Entities.User();
-            finduser.Id = user["id"].GetValue<int>();
-            var UserUpdate = _context.Users.Where(a => a.Id == finduser.Id).FirstOrDefault();
-            UserUpdate.UserName = user["username"].GetValue<string>();
-            UserUpdate.Password = user["password"].GetValue<string>();
-            UserUpdate.Email = user["email"].GetValue<string>();
-            UserUpdate.Address = user["address"].GetValue<string>();
-            UserUpdate.BirthDate = user["birthdate"].GetValue<DateOnly>();
-            UserUpdate.AvatarUrl = user["avatarurl"].GetValue<string>();
-            UserUpdate.Name = user["name"].GetValue<string>();
-            var Role = user["role"].GetValue<string>();
-            var role = _context.Roles.Where(a => a.Name == Role).FirstOrDefault();
-            UserUpdate.RoleId = role.Id;
-            //adding to db
-            _context.Users.Update(UserUpdate);
+            var role = _context.Roles
+                .Where(r => r.Id == id)
+                .Include(r => r.RolePermissions!)
+                .ThenInclude(rp => rp.Permission)
+                .FirstOrDefault();
+
+            if (role == null) return null;
+
+            return new RoleResponseDto
+            {
+                Id = role.Id,
+                Name = role.Name,
+                Description = role.Description,
+                Permissions = role.RolePermissions!
+                    .Select(rp => rp.Permission!.Name)
+                    .ToList()
+            };
+        }
+
+        public void UpdateRole(UpdateRoleDto request)
+        {
+            var role = _context.Roles.Include(r => r.RolePermissions).FirstOrDefault(r => r.Id == request.Id);
+
+            if (role == null) throw new KeyNotFoundException($"Role with ID {request.Id} not found.");
+
+            role.Name = request.Name;
+            role.Description = request.Description;
+
+
+            _context.RolePermissions.RemoveRange(role.RolePermissions);
+
+            if (request.PermissionIds.Any())
+            {
+                var newPermissions = request.PermissionIds
+                    .Select(permId => new RolePermission { RoleId = role.Id, PermissionId = permId })
+                    .ToList();
+
+                _context.RolePermissions.AddRange(newPermissions);
+            }
+
             _context.SaveChanges();
         }
 
-        public bool GetDeleted(JsonObject idjson)
+        public bool DeleteRole(int id)
         {
-            var id = idjson["id"].GetValue<int>();
-
-            var User = _context.Users.Find(id);
-
-            if (User != null)
+            var role = _context.Roles.Find(id);
+            if (role != null)
             {
-                _context.Users.Remove(User);
+                _context.Roles.Remove(role);
                 _context.SaveChanges();
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
     }
 }
