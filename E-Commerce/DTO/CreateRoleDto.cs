@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace E_Commerce.Services
+namespace E_Commerce.DTO
 {
     // Used for creating a new role
     public class CreateRoleDto
