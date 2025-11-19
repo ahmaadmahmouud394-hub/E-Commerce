@@ -45,7 +45,8 @@ namespace E_Commerce.BusinessObject
             BrandUpdate.Name = brand["name"].GetValue<string>();
             BrandUpdate.Description = brand["description"].GetValue<string>();
             BrandUpdate.Slogan = brand["slogan"]?.GetValue<string>();
-            BrandUpdate.PhotoUrl = brand["photourl"].GetValue<string>();
+            var image64base = brand["photourl"].GetValue<string>();
+            BrandUpdate.PhotoUrl = _imageHandler.HandledURL(image64base, "brands");
             _context.Brands.Update(BrandUpdate);
             _context.SaveChanges();
         }
