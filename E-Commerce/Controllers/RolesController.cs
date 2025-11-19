@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using E_Commerce.BusinessObject;
-using E_Commerce.DTO;
+using E_Commerce.Domain.DTO;
 
 namespace E_Commerce.Controllers
 {
